@@ -13,8 +13,9 @@ Tickets principales
 Flujo de trabajo
 - Crear una rama por ticket: `ticket/TICKET-<NN>-short-desc`.
 - Commits atómicos en la rama del ticket.
-- Se realizan commits atómicos bajo supervisión.
+- Se realizan commits atómicos bajo supervisión. No realizarlos automáticamente, puedes pueden haber ficheros pendientes de validar los cambios.
 - No se marcarán tareas como completadas sin confirmación explícita del responsable.
 - Se realizarán PRs una vez que la tarea esté completada y haya superado el DoD.
 - Los ficheros de la carpeta back no se modifican
+- Antes de reemplazar rutas hay que verificar que el fichero exista
 

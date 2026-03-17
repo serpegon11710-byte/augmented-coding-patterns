@@ -60,87 +60,86 @@ Opciones de solución (priorizadas)
   3. Cambiar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` a ruta relativa o inlinear el SVG.
   4. Revisar `webpack` bundle `r.p` y, si procede, reescribir a `"./"` (hacer copia de seguridad antes).
 
-- Opción 2 — Servir la carpeta localmente (menos invasiva)
-  - Ejecutar: `npx http-server . -p 8080` o `python -m http.server 8080` desde el root y abrir `http://localhost:8080/augmented-coding-patterns.htm`.
+# TICKET-02: Correcciones
 
-Comandos sugeridos (PowerShell)
--------------------------------
+Descripción
+- Objetivo: permitir abrir `augmented-coding-patterns.htm` desde `file://` en Chrome (sin servidor) o documentar claramente la alternativa de servir la carpeta localmente.
+
+Resumen ejecutivo
+- Estado actual: varias correcciones ya realizadas (HTML y assets locales). Quedan pendientes reescrituras en CSS/JS y decisiones sobre bundles minificados.
+- Resultado esperado: referencia a assets locales en `augmented-coding-patterns_files/` y, opcionalmente, bundles parcheados para soporte `file://`.
+
+Estado detallado de puntos (acción requerida)
+- Reformatear `augmented-coding-patterns.htm`: COMPLETADO
+- Renombrar `.js.descarga` → `.js` (wrappers y referencias): COMPLETADO
+- Mover/copiar assets (fonts, `semantic_map.svg`) a `augmented-coding-patterns_files/`: COMPLETADO
+- Reescribir rutas en CSS (`886ee8d28508f25a.css`): PENDIENTE — acción requerida: reemplazo de `/_next/static/media/` por `./augmented-coding-patterns_files/` (sugerido, safe). (see Commands abajo)
+- Parchear fetchs absolutos en bundles (`page-*.js`): PENDIENTE — acción requerida: cambiar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` por ruta relativa o inlinear SVG.
+- Revisar/decidir `publicPath` en `webpack-cd040e31edf92b00.js` (`r.p`): PENDIENTE/ALTO RIESGO — acción requerida: hacer backup, evaluar si reescribir a `"./"` o dejar y servir por HTTP.
+- Probar `file://` en Chrome y registrar errores de consola: PENDIENTE — acción requerida: ejecutar pruebas manuales y adjuntar consola.
+- Limpiar wrappers/archivos obsoletos tras verificación: PENDIENTE — acción de baja prioridad tras pruebas satisfactorias.
+- Confirmar que `back/` no se modifica: COMPLETADO (usuario restauró cuando fue tocado accidentalmente).
+
+Acciones ya realizadas (resumen)
+- HTML principal actualizado: referencias de scripts y hojas apuntan a `augmented-coding-patterns_files/`.
+- Assets (fuentes `.woff2` y `semantic_map.svg`) descargados y movidos a `augmented-coding-patterns_files/`.
+- Renombrado físico de `*.js.descarga` a `*.js` y creación de wrappers según decisión tomada.
+
+Pendientes concretos y pasos recomendados
+1) Reescribir rutas en CSS (bajo riesgo)
+   - Archivo objetivo: `augmented-coding-patterns_files/886ee8d28508f25a.css`
+   - Comando sugerido (PowerShell):
+```
+(Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
+```
+   - Estado después: verifica fuentes cargadas desde `file://`.
+
+2) Parchear fetchs absolutos (mapa)
+   - Archivo objetivo: `augmented-coding-patterns_files/page-f5622273e356b20c.js`
+   - Acción: reemplazar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` por `fetch("./augmented-coding-patterns_files/semantic_map.svg")` o inlinear el SVG para evitar fetch.
+
+3) Evaluar `publicPath` en bundle (alto riesgo)
+   - Archivo objetivo: `augmented-coding-patterns_files/webpack-cd040e31edf92b00.js`
+   - Riesgo: modificar minificado puede romper referencias. Procedimiento recomendado:
+     a) Hacer copia de seguridad: `copy webpack-cd040e31edf92b00.js webpack-cd040e31edf92b00.js.bak`
+     b) Probar reemplazo: `r.p="./"` (o reescribir a rutas relativas) — revisar consola tras pruebas.
+
+4) Pruebas finales
+   - Abrir `file:///.../augmented-coding-patterns.htm` en Chrome y anotar 404s/errores de consola.
+   - Ir resolviendo errores por prioridad (fonts → map → chunks).
+
+5) Limpieza
+   - Tras confirmar funcionamiento, eliminar wrappers/archivos obsoletos y commitear cambios.
+
+Ficheros añadidos/localizados
+- `augmented-coding-patterns_files/8d697b304b401681-s.woff2` — PRESENTE
+- `augmented-coding-patterns_files/ba015fad6dcf6784-s.woff2` — PRESENTE
+- `augmented-coding-patterns_files/4cf2300e9c8272f7-s.p.woff2` — PRESENTE
+- `augmented-coding-patterns_files/9610d9e46709d722-s.woff2` — PRESENTE
+- `augmented-coding-patterns_files/747892c23ea88013-s.woff2` — PRESENTE
+- `augmented-coding-patterns_files/93f479601ee12b01-s.p.woff2` — PRESENTE
+- `augmented-coding-patterns_files/semantic_map.svg` — PRESENTE
+
+Cómo proceder ahora (elige una opción)
+- Opción A (recomendada si quieres `file://` sin servidor): autorizas que aplique los parches siguientes automáticamente:
+  - Reescrituras CSS (punto 1) + parche de fetch (punto 2). Te muestro diffs antes de commitear. Para `publicPath` (punto 3) haré sólo sugerencia y copia de seguridad; patchar ese bundle lo hago solo con tu OK explícito.
+- Opción B (menos invasiva): no tocar bundles; te doy los comandos y checklist para servir localmente por HTTP (`python -m http.server` o `npx http-server`) y validar que todo funciona.
+
+Comandos rápidos (PowerShell)
 ```
 New-Item -ItemType Directory -Force -Path .\augmented-coding-patterns_files\maps
-Copy-Item -Path <ruta_del_svg> -Destination .\augmented-coding-patterns_files\maps\semantic_map.svg
+Copy-Item -Path .\augmented-coding-patterns_files\semantic_map.svg -Destination .\augmented-coding-patterns_files\maps\semantic_map.svg
 (Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
 git add -A
 git commit -m "TICKET-02: Localizar assets y reescribir rutas para file://"
 ```
 
-Notas y restricciones
----------------------
-- No modificar la carpeta `back/` (restaurada por el usuario desde Git).
-- Hacer copia de seguridad (`.bak`) antes de editar bundles minificados.
+Notas y riesgos
+- No tocaré `back/`.
+- Modificar bundles minificados conlleva riesgo — siempre crear copia de seguridad antes.
 
-Siguiente paso propuesto
-------------------------
-Indica la preferencia:
+Registro de cambios y autoría
+- Documentado y reorganizado por el equipo el 2026-03-17.
 
-- Si quieres trabajar sin servidor: doy el patch automático (Opción 1) y muestro un diff antes de commitear.
-- Si prefieres evitar cambios en bundles: te preparo los comandos para servir localmente (Opción 2) y una checklist de verificación.
-
----
-
-Documentado y reorganizado por el equipo el 2026-03-17.
-
-Recursos absolutos localizados y acciones realizadas
------------------------------------------------
-Se localizaron rutas absolutas que apuntan a `https://lexler.github.io/augmented-coding-patterns/...`. Para cada recurso se comprobó si existe una copia local en la raíz del repositorio (`augmented-coding-patterns/`) y, en caso de faltar, se descargó desde el origen.
-
-Estado por recurso (fecha: 2026-03-17)
-
-- `8d697b304b401681-s.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/8d697b304b401681-s.woff2`
-  - Local: `./8d697b304b401681-s.woff2`
-  - Acción: presente/asegurado (archivo local disponible).
-
-- `ba015fad6dcf6784-s.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/ba015fad6dcf6784-s.woff2`
-  - Local: `./ba015fad6dcf6784-s.woff2`
-  - Acción: presente/asegurado.
-
-- `4cf2300e9c8272f7-s.p.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`
-  - Local: `./4cf2300e9c8272f7-s.p.woff2`
-  - Acción: presente/asegurado.
-
-- `9610d9e46709d722-s.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/9610d9e46709d722-s.woff2`
-  - Local: `./9610d9e46709d722-s.woff2`
-  - Acción: presente/asegurado.
-
-- `747892c23ea88013-s.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/747892c23ea88013-s.woff2`
-  - Local: `./747892c23ea88013-s.woff2`
-  - Acción: presente/asegurado.
-
-- `93f479601ee12b01-s.p.woff2`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`
-  - Local: `./93f479601ee12b01-s.p.woff2`
-  - Acción: presente/asegurado.
-
-- `semantic_map.svg`
-  - Origen: `https://lexler.github.io/augmented-coding-patterns/maps/semantic_map.svg`
-  - Local: `./semantic_map.svg`
-  - Acción: presente/asegurado.
-
-Notas:
-- Todos los recursos listados están ahora disponibles en la raíz del repositorio (nombre de archivo sin subcarpetas). Si prefieres que se coloquen dentro de `augmented-coding-patterns_files/` en su lugar, lo puedo mover y actualizar las rutas en CSS/JS.
-- No se tocaron archivos dentro de `back/`.
-
-**Comandos sugeridos (PowerShell) — ejemplo**
-```
-New-Item -ItemType Directory -Force -Path .\augmented-coding-patterns_files\maps
-Copy-Item -Path <ruta_del_svg> -Destination .\augmented-coding-patterns_files\maps\semantic_map.svg
-(Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
-git add -A
-git commit -m "TICKET-02: Localizar assets y reescribir rutas para file://"
-```
-
-Si quieres, genero el parche listo para aplicar o ejecuto los cambios (no tocaré `back/`).
+Siguiente paso (mi propuesta)
+- Dime si prefieres `Opción A` (parcheo automático de CSS+JS; te muestro diff) o `Opción B` (preparo pasos para servir localmente). No iniciaré cambios sobre bundles minificados sin tu confirmación explícita.
