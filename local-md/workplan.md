@@ -17,5 +17,10 @@ Flujo de trabajo
 - No se marcarán tareas como completadas sin confirmación explícita del responsable.
 - Se realizarán PRs una vez que la tarea esté completada y haya superado el DoD.
 - Los ficheros de la carpeta back no se modifican
-- Antes de reemplazar rutas hay que verificar que el fichero exista
-
+- Antes de reemplazar rutas hay que verificar que el fichero exista en "augmented-coding-patterns_files"
+- Las descargas se harán directamente en "augmented-coding-patterns_files" (sin subcarpetas)
+- Las rutas en el fichero 
+"augmented-coding-patterns.htm" apuntarán a "./augmented-coding-patterns_files/<archivo>"
+- Las rutas en los ficheros CSS
+ apuntarán a "./<archivo>"
+- Las rutas en los JS son susceptibles de análisis. En principio apuntarán a "./augmented-coding-patterns_files/<archivo>"
