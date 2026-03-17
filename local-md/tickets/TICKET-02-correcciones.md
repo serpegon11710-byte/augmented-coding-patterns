@@ -110,6 +110,8 @@ Pendientes concretos y pasos recomendados
     - Corrección aplicada (fecha: 2026-03-17): actualizadas las entradas a `./<archivo>` dentro de `886ee8d28508f25a.css`.
     - Descargas realizadas: ninguna (no fue necesario descargar archivos adicionales).
     - Nota: no se realizaron reemplazos en otros ficheros CSS; si localizas más CSS con rutas absolutas, aplicaré el mismo procedimiento previa verificación.
+	- **Otros ficheros CSS:** ningún otro fichero `.css` en el workspace contiene el patrón `/augmented-coding-patterns/_next/static/media/`.
+
 
 2) Parchear fetchs absolutos (mapa)
    - Archivo objetivo: `augmented-coding-patterns_files/page-f5622273e356b20c.js`
@@ -160,3 +162,8 @@ Registro de cambios y autoría
 
 Siguiente paso (mi propuesta)
 - Dime si prefieres `Opción A` (parcheo automático de CSS+JS; te muestro diff) o `Opción B` (preparo pasos para servir localmente). No iniciaré cambios sobre bundles minificados sin tu confirmación explícita.
+
+
+Notes:
+- The working copy `augmented-coding-patterns_files/886ee8d28508f25a.css` has already been updated to use relative local references (`./<archivo>`) to resolve correctly from `file://` (avoid duplicating the assets folder in the resolved path).
+- This audit is documentation-only: no further file edits were made by this step.
