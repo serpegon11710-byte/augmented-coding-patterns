@@ -8,12 +8,13 @@ Tareas
 - Añadir `workplan.md` con proceso y checklist.
 - Definir convenciones de ramas (`ticket/<NUM>-desc`) y reglas de PR.
 
+Entregables
+- `local-md/` con tickets y documentación.
+- `local-py/` y `local-ps/` para scripts auxiliares.
+
 Definition Of Done (DoD)
 - Las carpetas existen en el repositorio.
 - `workplan.md` está presente en `local-md/`.
-- `local-md/tickets/TICKET-01-planificacion.md` creado con contenido de este ticket.
-- El todo list refleja el estado `Planificacion` en progreso.
+- Existe un fichero en `local-md/tickets/` cpara cada ticket.
+- Se ha validado correctamente la definicion del workplan..
 
-Notas
-- Branch: `ticket/TICKET-01-planificacion`.
-- Commit atómico requerido: añadir solo documentación y estructura.

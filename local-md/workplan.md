@@ -10,19 +10,10 @@ Tickets principales
 3. Ruta Independiente — `local-md/tickets/TICKET-03-ruta-independiente.md`
 4. Multi-idioma — `local-md/tickets/TICKET-04-multi-idioma.md`
 
-Entregables
-- `local-md/` con tickets y documentación.
-- `local-py/` y `local-ps/` para scripts auxiliares.
-- Ficheros HTML y assets corregidos en `augmented-coding-patterns.htm` y `augmented-coding-patterns_files/`.
-
 Flujo de trabajo
 - Crear una rama por ticket: `ticket/TICKET-<NN>-short-desc`.
 - Commits atómicos en la rama del ticket.
-- PR solo cuando la tarea esté verificada y validada.
+- Se realizan commits atómicos bajo supervisión.
+- No se marcarán tareas como completadas sin confirmación explícita del responsable.
+- Se realizarán PRs una vez que la tarea esté completada y haya superado el DoD.
 
-Verificación final
-- Abrir `file:///.../augmented-coding-patterns.htm` en Chrome.
-- No 404 críticos ni errores fatales en consola.
-- Documentar limitaciones en `local-md/tickets/TICKET-02-correcciones.md` si persisten dependencias server-side.
-
-Fecha: 2026-03-17
