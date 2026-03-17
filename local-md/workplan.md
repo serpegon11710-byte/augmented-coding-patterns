@@ -16,4 +16,5 @@ Flujo de trabajo
 - Se realizan commits atómicos bajo supervisión.
 - No se marcarán tareas como completadas sin confirmación explícita del responsable.
 - Se realizarán PRs una vez que la tarea esté completada y haya superado el DoD.
+- Los ficheros de la carpeta back no se modifican
 

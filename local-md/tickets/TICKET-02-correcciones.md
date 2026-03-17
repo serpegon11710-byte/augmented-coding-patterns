@@ -9,21 +9,31 @@ Tareas
 	1. Localizar referencias absolutas (https://... o rutas que empiezan con `/`) en `augmented-coding-patterns.htm`.
 	- `augmented-coding-patterns.htm`
 		[x] Comentario guardado: `<!-- saved from url=(0056)https://lexler.github.io/augmented-coding-patterns/talk/ -->` (origina el base URL remoto). No es necesario modificarlo
-		- Fuentes preload: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`, `https://lexler.github.io/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`.
-		- Preloads de CSS (ejemplos): `https://lexler.github.io/augmented-coding-patterns/_next/static/css/89a280c72bec5701.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dcaae7946540df67.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/e8ff6f0eb86cab82.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dddbf12c77d8c6c6.css`.
-		- Favicon: `https://lexler.github.io/augmented-coding-patterns/favicon.ico` (link rel="icon").
-		- Navegación / enlaces: múltiples `href` apuntando a `https://lexler.github.io/augmented-coding-patterns/`:
-			- `https://lexler.github.io/augmented-coding-patterns/` (logo / Home)
-			- `https://lexler.github.io/augmented-coding-patterns/pattern-catalog/` (Complete Catalog)
-			- `https://lexler.github.io/augmented-coding-patterns/obstacles/` (Obstacles)
-			- `https://lexler.github.io/augmented-coding-patterns/anti-patterns/` (Anti-Patterns)
-			- `https://lexler.github.io/augmented-coding-patterns/patterns/` (Patterns)
-			- `https://lexler.github.io/augmented-coding-patterns/talk/` (Talk)
-			- `https://lexler.github.io/augmented-coding-patterns/contributors/` (Contributors)
+		[x] Fuentes preload: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`, `https://lexler.github.io/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`.
+		[x] Preloads de CSS (ejemplos): `https://lexler.github.io/augmented-coding-patterns/_next/static/css/89a280c72bec5701.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dcaae7946540df67.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/e8ff6f0eb86cab82.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dddbf12c77d8c6c6.css`.
+		[x] Favicon: `https://lexler.github.io/augmented-coding-patterns/favicon.ico` (link rel="icon").
+		[x] Navegación / enlaces: múltiples `href` apuntando a `https://lexler.github.io/augmented-coding-patterns/`:
+			- Se trata del mnú header que se ha eliminado
+		- Referencias absolutas encontradas (CSS / JS bundles)**
+			- CSS: [augmented-coding-patterns_files/886ee8d28508f25a.css](augmented-coding-patterns_files/886ee8d28508f25a.css#L1)
+				- Contiene múltiples @font-face con `src:url(/augmented-coding-patterns/_next/static/media/<archivo>.woff2)` (ejemplos: `8d697b304b401681-s.woff2`, `ba015fad6dcf6784-s.woff2`, `4cf2300e9c8272f7-s.p.woff2`, `9610d9e46709d722-s.woff2`, `747892c23ea88013-s.woff2`, `93f479601ee12b01-s.p.woff2`).
+			- JS bundle: [augmented-coding-patterns_files/webpack-cd040e31edf92b00.js.descarga](augmented-coding-patterns_files/webpack-cd040e31edf92b00.js.descarga#L1)
+				- Define `r.p="/augmented-coding-patterns/_next/"` (publicPath) — obliga a resolver chunks desde la ruta raíz `/augmented-coding-patterns/_next/`.
+			- JS bundle: [augmented-coding-patterns_files/page-f5622273e356b20c.js.descarga](augmented-coding-patterns_files/page-f5622273e356b20c.js.descarga#L1)
+				- Llamada a fetch con ruta absoluta desde raíz: `fetch("".concat("/augmented-coding-patterns","/maps/semantic_map.svg"))` → intentará cargar `/augmented-coding-patterns/maps/semantic_map.svg`.
+			- JS bundle: [augmented-coding-patterns_files/255-466fbc12e2ae9324.js.descarga](augmented-coding-patterns_files/255-466fbc12e2ae9324.js.descarga#L1)
+				- Contiene utilidades de basePath (`addBasePath`, `removeBasePath`, `hasBasePath`) que usan `"/augmented-coding-patterns"` como prefijo; implica que varias rutas en runtime se construyen con ese base path.	
 	2.- Añadir recursos faltantes en `augmented-coding-patterns_files/` (por ejemplo `maps/semantic_map.svg`).
 	3. Sustituir por rutas relativas hacia `augmented-coding-patterns_files/` o eliminar los preloads no necesarios.
 		- Modificar `augmented-coding-patterns.htm` para eliminar/reemplazar recursos absolutos y cambiar favicon a local.
 	4. Documentar los cambios propuestos en este ticket antes de aplicar cualquier parche.[x] Localizar Referencias absolutas
+
+
+
+
+	Notas:
+	- Estas referencias impiden la carga completa desde `file://` porque el navegador resolverá URLs desde la web o desde la raíz del host.
+	- Próximo paso recomendado: volcar cada recurso referido (fonts, archivos en `_next/static/media`, `maps/semantic_map.svg`) dentro de `augmented-coding-patterns_files/` y reescribir las rutas (o editar las copias locales de los CSS/bundles para usar rutas relativas). Alternativa: servir la carpeta con un servidor local (ej. `npx http-server`) para mantener el basePath.
 
 
 
