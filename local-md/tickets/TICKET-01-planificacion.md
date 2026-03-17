@@ -18,11 +18,10 @@ Definition Of Done (DoD)
     [x] Existe la carpeta `local-py/`.
     [x] Existe la carpeta `local-ps/`.
 [x] `workplan.md` está presente en `local-md/`.
-- Existen los siguientes ficheros en `local-md/tickets/`:
 	[x] `TICKET-01-planificacion.md` (este ticket)
 	[x] `TICKET-02-correcciones.md`
 	[x] `TICKET-03-ruta-independiente.md`
 	[x] `TICKET-04-multi-idioma.md`
-- Se ha validado correctamente la definición del workplan.
-- [x] Se ha validado correctamente la definición del workplan.
+ [x] Se ha validado correctamente la definición del workplan.
+
 
