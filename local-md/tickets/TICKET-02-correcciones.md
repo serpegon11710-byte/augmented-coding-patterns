@@ -89,6 +89,51 @@ Indica la preferencia:
 
 Documentado y reorganizado por el equipo el 2026-03-17.
 
+Recursos absolutos localizados y acciones realizadas
+-----------------------------------------------
+Se localizaron rutas absolutas que apuntan a `https://lexler.github.io/augmented-coding-patterns/...`. Para cada recurso se comprobó si existe una copia local en la raíz del repositorio (`augmented-coding-patterns/`) y, en caso de faltar, se descargó desde el origen.
+
+Estado por recurso (fecha: 2026-03-17)
+
+- `8d697b304b401681-s.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/8d697b304b401681-s.woff2`
+  - Local: `./8d697b304b401681-s.woff2`
+  - Acción: presente/asegurado (archivo local disponible).
+
+- `ba015fad6dcf6784-s.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/ba015fad6dcf6784-s.woff2`
+  - Local: `./ba015fad6dcf6784-s.woff2`
+  - Acción: presente/asegurado.
+
+- `4cf2300e9c8272f7-s.p.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`
+  - Local: `./4cf2300e9c8272f7-s.p.woff2`
+  - Acción: presente/asegurado.
+
+- `9610d9e46709d722-s.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/9610d9e46709d722-s.woff2`
+  - Local: `./9610d9e46709d722-s.woff2`
+  - Acción: presente/asegurado.
+
+- `747892c23ea88013-s.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/747892c23ea88013-s.woff2`
+  - Local: `./747892c23ea88013-s.woff2`
+  - Acción: presente/asegurado.
+
+- `93f479601ee12b01-s.p.woff2`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`
+  - Local: `./93f479601ee12b01-s.p.woff2`
+  - Acción: presente/asegurado.
+
+- `semantic_map.svg`
+  - Origen: `https://lexler.github.io/augmented-coding-patterns/maps/semantic_map.svg`
+  - Local: `./semantic_map.svg`
+  - Acción: presente/asegurado.
+
+Notas:
+- Todos los recursos listados están ahora disponibles en la raíz del repositorio (nombre de archivo sin subcarpetas). Si prefieres que se coloquen dentro de `augmented-coding-patterns_files/` en su lugar, lo puedo mover y actualizar las rutas en CSS/JS.
+- No se tocaron archivos dentro de `back/`.
+
 **Comandos sugeridos (PowerShell) — ejemplo**
 ```
 New-Item -ItemType Directory -Force -Path .\augmented-coding-patterns_files\maps
