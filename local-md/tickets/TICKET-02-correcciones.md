@@ -173,4 +173,14 @@ Registro de cambios y autoría
 Siguiente paso (mi propuesta)
 - Dime si prefieres `Opción A` (parcheo automático de CSS+JS; te muestro diff) o `Opción B` (preparo pasos para servir localmente). No iniciaré cambios sobre bundles minificados sin tu confirmación explícita.
 
+Rama de trabajo para modificaciones de rutas
+------------------------------------------
+- **Nombre de la rama:** `TICKET-02.1-modificaciones-de-rutas-absolutas`
+- **Propósito:** agrupar cambios de bajo/medio riesgo para reemplazar referencias absolutas (CSS y JS no críticos) y documentar los pendientes de alto riesgo (bundles dinámicos/publicPath) sin procesar los bundles minificados.
+- **Acciones realizadas en esta rama:**
+  - Reescritura de rutas en CSS (`886ee8d28508f25a.css`) para uso desde `file://`.
+  - Parche del `fetch` del mapa en `page-f5622273e356b20c.js` para apuntar a `./augmented-coding-patterns_files/semantic_map.svg`.
+  - Actualización de este ticket con la auditoría y cambios aplicados.
+- **Notas:** los bundles dinámicos siguen catalogados como alto riesgo y permanecen sin modificar en esta rama. Antes de tocar `webpack-cd040e31edf92b00.js` se hará copia de seguridad y se propondrá el diff explícitamente.
+
 
