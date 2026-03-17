@@ -2,72 +2,100 @@
 
 Descripción
 - Aplicar las correcciones necesarias para que la lógica crítica de la página cargue desde `file://`.
+# TICKET-02: Correcciones
 
-Tareas
-- Objetivo: aplicar la primera corrección en `augmented-coding-patterns.htm` para eliminar/reemplazar recursos absolutos (fuentes, preloads, favicon) y ajustar rutas relativas.
-- Pasos propuestos:
-	1. Localizar referencias absolutas (https://... o rutas que empiezan con `/`) en `augmented-coding-patterns.htm`.
-	- `augmented-coding-patterns.htm`
-		[x] Comentario guardado: `<!-- saved from url=(0056)https://lexler.github.io/augmented-coding-patterns/talk/ -->` (origina el base URL remoto). No es necesario modificarlo
-		[x] Fuentes preload: `https://lexler.github.io/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`, `https://lexler.github.io/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`.
-		[x] Preloads de CSS (ejemplos): `https://lexler.github.io/augmented-coding-patterns/_next/static/css/89a280c72bec5701.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dcaae7946540df67.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/e8ff6f0eb86cab82.css`, `https://lexler.github.io/augmented-coding-patterns/_next/static/css/dddbf12c77d8c6c6.css`.
-		[x] Favicon: `https://lexler.github.io/augmented-coding-patterns/favicon.ico` (link rel="icon").
-		[x] Navegación / enlaces: múltiples `href` apuntando a `https://lexler.github.io/augmented-coding-patterns/`:
-			- Se trata del mnú header que se ha eliminado
-		- Referencias absolutas encontradas (CSS / JS bundles)**
-			- CSS: [augmented-coding-patterns_files/886ee8d28508f25a.css](augmented-coding-patterns_files/886ee8d28508f25a.css#L1)
-				- Contiene múltiples @font-face con `src:url(/augmented-coding-patterns/_next/static/media/<archivo>.woff2)` (ejemplos: `8d697b304b401681-s.woff2`, `ba015fad6dcf6784-s.woff2`, `4cf2300e9c8272f7-s.p.woff2`, `9610d9e46709d722-s.woff2`, `747892c23ea88013-s.woff2`, `93f479601ee12b01-s.p.woff2`).
-			- JS bundle: [augmented-coding-patterns_files/webpack-cd040e31edf92b00.js.descarga](augmented-coding-patterns_files/webpack-cd040e31edf92b00.js.descarga#L1)
-				- Define `r.p="/augmented-coding-patterns/_next/"` (publicPath) — obliga a resolver chunks desde la ruta raíz `/augmented-coding-patterns/_next/`.
-			- JS bundle: [augmented-coding-patterns_files/page-f5622273e356b20c.js.descarga](augmented-coding-patterns_files/page-f5622273e356b20c.js.descarga#L1)
-				- Llamada a fetch con ruta absoluta desde raíz: `fetch("".concat("/augmented-coding-patterns","/maps/semantic_map.svg"))` → intentará cargar `/augmented-coding-patterns/maps/semantic_map.svg`.
-			- JS bundle: [augmented-coding-patterns_files/255-466fbc12e2ae9324.js.descarga](augmented-coding-patterns_files/255-466fbc12e2ae9324.js.descarga#L1)
-				- Contiene utilidades de basePath (`addBasePath`, `removeBasePath`, `hasBasePath`) que usan `"/augmented-coding-patterns"` como prefijo; implica que varias rutas en runtime se construyen con ese base path.	
-	2.- Añadir recursos faltantes en `augmented-coding-patterns_files/` (por ejemplo `maps/semantic_map.svg`).
-	3. Sustituir por rutas relativas hacia `augmented-coding-patterns_files/` o eliminar los preloads no necesarios.
-		- Modificar `augmented-coding-patterns.htm` para eliminar/reemplazar recursos absolutos y cambiar favicon a local.
-	4. Documentar los cambios propuestos en este ticket antes de aplicar cualquier parche.[x] Localizar Referencias absolutas
+Resumen
+-------
+Objetivo: permitir que la lógica crítica de la página cargue desde `file://`, o bien documentar exactamente qué necesita servidor.
 
+Estado de tareas
+-----------------
+- Completadas
+  - Reformateo y edición de `augmented-coding-patterns.htm` para apuntar a assets locales.
+  - Renombrado y unificación de `*.js.descarga` → `*.js` (commits locales realizados).
+  - Documentación inicial de hallazgos añadida a este ticket.
 
+- Pendientes
+  - Copiar assets faltantes a `augmented-coding-patterns_files/` (fuentes y `maps/semantic_map.svg`).
+  - Revisar y, si procede, parchear bundles minificados (`webpack-cd040e31edf92b00.js`, etc.) para eliminar `publicPath` absoluto.
+  - Probar `file://` en Chrome y reportar errores de consola; decidir limpieza (eliminar wrappers/archivos obsoletos) tras las pruebas.
 
+Hallazgos clave
+---------------
+- CSS fonts
+  - Archivo: `augmented-coding-patterns_files/886ee8d28508f25a.css`
+  - Problema: múltiples `@font-face` usan `src:url(/augmented-coding-patterns/_next/static/media/<archivo>.woff2)` (ruta absoluta desde la raíz).
+  - Recomendación: copiar los `.woff2` referenciados a `augmented-coding-patterns_files/` y reescribir las URLs a rutas relativas `./augmented-coding-patterns_files/<archivo>.woff2`.
 
-	Notas:
-	- Estas referencias impiden la carga completa desde `file://` porque el navegador resolverá URLs desde la web o desde la raíz del host.
-	- Próximo paso recomendado: volcar cada recurso referido (fonts, archivos en `_next/static/media`, `maps/semantic_map.svg`) dentro de `augmented-coding-patterns_files/` y reescribir las rutas (o editar las copias locales de los CSS/bundles para usar rutas relativas). Alternativa: servir la carpeta con un servidor local (ej. `npx http-server`) para mantener el basePath.
+- PublicPath en bundles
+  - Archivo: `augmented-coding-patterns_files/webpack-cd040e31edf92b00.js`
+  - Problema: contiene `r.p="/augmented-coding-patterns/_next/"` — los chunks se cargarán desde la raíz y fallarán con `file://`.
+  - Recomendación: si se necesita soporte `file://`, reescribir `r.p` a `"./"` o ajustar rutas (hacer copia de seguridad del bundle antes; riesgo en minificados).
 
+- Fetch absoluto (mapa)
+  - Archivo: `augmented-coding-patterns_files/page-f5622273e356b20c.js`
+  - Problema: `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` fallará desde `file://`.
+  - Recomendación: copiar `semantic_map.svg` a `augmented-coding-patterns_files/maps/` y cambiar la llamada a fetch por una ruta relativa, o inlinear el SVG.
 
+- BasePath en runtime
+  - Archivo: `augmented-coding-patterns_files/255-466fbc12e2ae9324.js`
+  - Problema: contiene `addBasePath/removeBasePath/hasBasePath` usando `"/augmented-coding-patterns"` — la app construye rutas con ese prefijo en tiempo de ejecución.
+  - Recomendación: neutralizar o parchear estas utilidades para usar rutas relativas, o servir por HTTP.
 
-- Corregir fetchs absolutos en bundles (`page-f5622273e356b20c.js.descarga` y otros) a rutas relativas o inlinear recursos faltantes.
-	- Bundles JS (ej.: `augmented-coding-patterns_files/page-f5622273e356b20c.js.descarga` y su copia en `back/original/...`)
-		- Llamada a fetch con ruta absoluta desde raíz: `fetch("".concat("/augmented-coding-patterns","/maps/semantic_map.svg"))` → intenta cargar `/augmented-coding-patterns/maps/semantic_map.svg` (ruta raíz, no relativa al archivo `file://`).
-		- Uso de `fetch(e.canonicalUrl)` / llamadas a server-actions (p. ej. funciones que construyen URLs canónicas o usan headers de Next.js) — pueden originar peticiones a URLs externas o al endpoint canónico.
+Ficheros sugeridos a añadir
+---------------------------
+- `augmented-coding-patterns_files/maps/semantic_map.svg`
+- Fuentes `.woff2` referenciadas en el CSS (copiar localmente)
 
-	- Otros recursos en bundles y polyfills
-		- Referencias a `https://react.dev/errors/...` (enlaces de error minificado de React) y a URLs de proyectos (`https://github.com/...`) dentro de dependencias/minificados. No siempre cargadas como recursos, pero presentes en código.
+Impacto
+-------
+- Sin correcciones, la página no carga correctamente desde `file://` (404s y fallos de fetch).
+- Algunas funcionalidades (mapa interactivo y carga de chunks) dependen de reescrituras o de servir mediante HTTP.
 
-	Impacto inmediato
-	- Los `https://lexler.github.io/...` y las rutas que empiezan por `/` impedirán que la página cargue correctamente desde `file://` porque el navegador intentará resolver recursos en la web o en la raíz del host.
-	- Las llamadas a `fetch` con rutas raíz o `e.canonicalUrl` pueden fallar o intentar contactar al servidor (Next.js server-actions). Estas deben ser adaptadas a rutas relativas o mockeadas/inlined cuando sea posible.
-- Documentar limitaciones en `local-md/tickets/TICKET-02-correcciones.md` si persisten dependencias server-side.
+Opciones de solución (priorizadas)
+----------------------------------
+- Opción 1 — Parchear para `file://` (más trabajo, sin servidor)
+  1. Copiar assets faltantes a `augmented-coding-patterns_files/`.
+  2. Reescribir en CSS las URLs de `/_next/static/media/` a `./augmented-coding-patterns_files/`.
+  3. Cambiar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` a ruta relativa o inlinear el SVG.
+  4. Revisar `webpack` bundle `r.p` y, si procede, reescribir a `"./"` (hacer copia de seguridad antes).
 
-Propuestas:
+- Opción 2 — Servir la carpeta localmente (menos invasiva)
+  - Ejecutar: `npx http-server . -p 8080` o `python -m http.server 8080` desde el root y abrir `http://localhost:8080/augmented-coding-patterns.htm`.
 
+Comandos sugeridos (PowerShell)
+-------------------------------
+```
+New-Item -ItemType Directory -Force -Path .\augmented-coding-patterns_files\maps
+Copy-Item -Path <ruta_del_svg> -Destination .\augmented-coding-patterns_files\maps\semantic_map.svg
+(Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
+git add -A
+git commit -m "TICKET-02: Localizar assets y reescribir rutas para file://"
+```
 
+Notas y restricciones
+---------------------
+- No modificar la carpeta `back/` (restaurada por el usuario desde Git).
+- Hacer copia de seguridad (`.bak`) antes de editar bundles minificados.
 
-Entregables
-- Ficheros HTML y assets corregidos en `augmented-coding-patterns.htm` y `augmented-coding-patterns_files/`.
+Siguiente paso propuesto
+------------------------
+Indica la preferencia:
 
-Definition Of Done (DoD)
-- Al abrir `file:///.../augmented-coding-patterns.htm` en Chrome, la página carga sin errores críticos de recursos faltantes (no 404 críticos en consola) y la UI principal es visible.
-- La funcionalidad de los nodos se activa correctamente.
-- Cambios documentados en este ticket con la lista de archivos editados.
+- Si quieres trabajar sin servidor: doy el patch automático (Opción 1) y muestro un diff antes de commitear.
+- Si prefieres evitar cambios en bundles: te preparo los comandos para servir localmente (Opción 2) y una checklist de verificación.
 
+---
 
-Notas
-- Evaluar si partes del runtime (Next.js server-actions) requieren servidor y documentarlo.
+Documentado y reorganizado por el equipo el 2026-03-17.
 
+**Comandos sugeridos (PowerShell) — ejemplo**
+```
+New-Item -ItemType Directory -Force -Path .\augmented-coding-patterns_files\maps
+Copy-Item -Path <ruta_del_svg> -Destination .\augmented-coding-patterns_files\maps\semantic_map.svg
+(Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
+git add -A
+git commit -m "TICKET-02: Localizar assets y reescribir rutas para file://"
+```
 
-	Próximos pasos sugeridos
-	- Reemplazar los `https://lexler.github.io/...` por rutas relativas a `augmented-coding-patterns_files/` (copiar/descargar las fuentes y CSS necesarios) o eliminar preloads no críticos.
-	- Convertir `/augmented-coding-patterns/maps/semantic_map.svg` a `augmented-coding-patterns_files/maps/semantic_map.svg` y añadir el archivo.
-	- Revisar bundles para detectar y adaptar llamadas a `fetch` que dependan de un servidor; documentar las que no puedan evitarse.
+Si quieres, genero el parche listo para aplicar o ejecuto los cambios (no tocaré `back/`).
