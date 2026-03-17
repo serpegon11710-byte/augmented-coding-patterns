@@ -117,6 +117,16 @@ Pendientes concretos y pasos recomendados
    - Archivo objetivo: `augmented-coding-patterns_files/page-f5622273e356b20c.js`
    - Acción: reemplazar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` por `fetch("./augmented-coding-patterns_files/semantic_map.svg")` o inlinear el SVG para evitar fetch.
 
+   - Acción realizada:
+     - Verificación: el fichero `augmented-coding-patterns_files/semantic_map.svg` EXISTE en la carpeta de assets; no fue necesario descargarlo.
+     - Cambio aplicado: en `augmented-coding-patterns_files/page-f5622273e356b20c.js` se sustituyó la construcción `fetch("".concat("/augmented-coding-patterns","/maps/semantic_map.svg"))` por `fetch("./augmented-coding-patterns_files/semantic_map.svg")` para que funcione desde `file://`.
+     - Resultado: el `fetch` ahora apunta a la copia local y la carga del mapa ya no depende de rutas absolutas.
+     - Nota de riesgo: no se tocaron otros bundles minificados que contienen `publicPath` (ver más abajo).
+
+   - Otras rutas absolutas detectadas en `.js`:
+     - `augmented-coding-patterns_files/webpack-cd040e31edf92b00.js` contiene `r.p="/augmented-coding-patterns/_next/"` (queda pendiente y catalogado como alto riesgo).
+
+
 3) Evaluar `publicPath` en bundle (alto riesgo)
    - Archivo objetivo: `augmented-coding-patterns_files/webpack-cd040e31edf92b00.js`
    - Riesgo: modificar minificado puede romper referencias. Procedimiento recomendado:
@@ -164,6 +174,3 @@ Siguiente paso (mi propuesta)
 - Dime si prefieres `Opción A` (parcheo automático de CSS+JS; te muestro diff) o `Opción B` (preparo pasos para servir localmente). No iniciaré cambios sobre bundles minificados sin tu confirmación explícita.
 
 
-Notes:
-- The working copy `augmented-coding-patterns_files/886ee8d28508f25a.css` has already been updated to use relative local references (`./<archivo>`) to resolve correctly from `file://` (avoid duplicating the assets folder in the resolved path).
-- This audit is documentation-only: no further file edits were made by this step.
