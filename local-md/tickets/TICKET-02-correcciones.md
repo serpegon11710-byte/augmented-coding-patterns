@@ -74,6 +74,7 @@ Estado detallado de puntos (acción requerida)
 - Renombrar `.js.descarga` → `.js` (wrappers y referencias): COMPLETADO
 - Mover/copiar assets (fonts, `semantic_map.svg`) a `augmented-coding-patterns_files/`: COMPLETADO
 - Reescribir rutas en CSS (`886ee8d28508f25a.css`): PENDIENTE — acción requerida: reemplazo de `/_next/static/media/` por `./augmented-coding-patterns_files/` (sugerido, safe). (see Commands abajo)
+ - Reescribir rutas en CSS (`886ee8d28508f25a.css`): COMPLETADO — se reemplazaron las URLs absolutas por `./augmented-coding-patterns_files/<archivo>` en `886ee8d28508f25a.css` (fuentes locales confirmadas).
 - Parchear fetchs absolutos en bundles (`page-*.js`): PENDIENTE — acción requerida: cambiar `fetch("/augmented-coding-patterns/maps/semantic_map.svg")` por ruta relativa o inlinear SVG.
 - Revisar/decidir `publicPath` en `webpack-cd040e31edf92b00.js` (`r.p`): PENDIENTE/ALTO RIESGO — acción requerida: hacer backup, evaluar si reescribir a `"./"` o dejar y servir por HTTP.
 - Probar `file://` en Chrome y registrar errores de consola: PENDIENTE — acción requerida: ejecutar pruebas manuales y adjuntar consola.
@@ -84,6 +85,7 @@ Acciones ya realizadas (resumen)
 - HTML principal actualizado: referencias de scripts y hojas apuntan a `augmented-coding-patterns_files/`.
 - Assets (fuentes `.woff2` y `semantic_map.svg`) descargados y movidos a `augmented-coding-patterns_files/`.
 - Renombrado físico de `*.js.descarga` a `*.js` y creación de wrappers según decisión tomada.
+ - Rutas en CSS reescritas: `augmented-coding-patterns_files/886ee8d28508f25a.css` ahora referencia las fuentes desde `./augmented-coding-patterns_files/`.
 
 Pendientes concretos y pasos recomendados
 1) Reescribir rutas en CSS (bajo riesgo)
@@ -93,6 +95,21 @@ Pendientes concretos y pasos recomendados
 (Get-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css) -replace '/augmented-coding-patterns/_next/static/media/', './augmented-coding-patterns_files/' | Set-Content .\augmented-coding-patterns_files\886ee8d28508f25a.css
 ```
    - Estado después: verifica fuentes cargadas desde `file://`.
+
+  - Acción realizada (fecha: 2026-03-17):
+    - Rutas localizadas en `886ee8d28508f25a.css`:
+     - `/augmented-coding-patterns/_next/static/media/8d697b304b401681-s.woff2`
+     - `/augmented-coding-patterns/_next/static/media/ba015fad6dcf6784-s.woff2`
+     - `/augmented-coding-patterns/_next/static/media/4cf2300e9c8272f7-s.p.woff2`
+     - `/augmented-coding-patterns/_next/static/media/9610d9e46709d722-s.woff2`
+     - `/augmented-coding-patterns/_next/static/media/747892c23ea88013-s.woff2`
+     - `/augmented-coding-patterns/_next/static/media/93f479601ee12b01-s.p.woff2`
+    - Verificación en `augmented-coding-patterns_files/`: todos los ficheros listados están PRESENTES.
+    - Acción tomada: se reescribieron las URLs dentro de `886ee8d28508f25a.css` para apuntar a rutas locales relativas (desde el propio fichero CSS) `./<archivo>` — evitando así duplicar `augmented-coding-patterns_files/` en la resolución de `file://`.
+    - Incidente detectado: inicialmente las rutas se habían cambiado a `./augmented-coding-patterns_files/<archivo>`, lo que, al resolverse desde `augmented-coding-patterns_files/886ee8d28508f25a.css`, producía `.../augmented-coding-patterns_files/augmented-coding-patterns_files/<archivo>` y generó el 404 observado.
+    - Corrección aplicada (fecha: 2026-03-17): actualizadas las entradas a `./<archivo>` dentro de `886ee8d28508f25a.css`.
+    - Descargas realizadas: ninguna (no fue necesario descargar archivos adicionales).
+    - Nota: no se realizaron reemplazos en otros ficheros CSS; si localizas más CSS con rutas absolutas, aplicaré el mismo procedimiento previa verificación.
 
 2) Parchear fetchs absolutos (mapa)
    - Archivo objetivo: `augmented-coding-patterns_files/page-f5622273e356b20c.js`
